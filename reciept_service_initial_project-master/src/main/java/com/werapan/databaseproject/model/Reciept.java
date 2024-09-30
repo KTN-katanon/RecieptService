@@ -8,6 +8,7 @@ import com.werapan.databaseproject.dao.CustomerDao;
 import com.werapan.databaseproject.dao.UserDao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,7 @@ public class Reciept {
     private int customerId;
     private User user;
     private Customer customer;
+    private ArrayList<RecieptDetail> recieptDetails = new ArrayList();
 
     public Reciept(int id, Date createdDate, double total, double cash, int totalQty, int userId, int customerId) {
         this.id = id;
@@ -51,6 +53,15 @@ public class Reciept {
         this.total = total;
         this.cash = cash;
         this.totalQty = totalQty;
+        this.userId = userId;
+        this.customerId = customerId;
+    }
+    public Reciept(double cash, int userId, int customerId) {
+        this.id = -1;
+        this.createdDate = null;
+        this.total = 0;
+        this.cash = cash;
+        this.totalQty = 0;
         this.userId = userId;
         this.customerId = customerId;
     }
@@ -138,9 +149,37 @@ public class Reciept {
         this.customerId = customer.getId();
     }
 
+    public ArrayList<RecieptDetail> getRecieptDeatails() {
+        return recieptDetails;
+    }
+
+    public void setRecieptDeatails(ArrayList recieptDetails) {
+        this.recieptDetails = recieptDetails;
+    }
+
+    public void addRecieptDetail(RecieptDetail recieptDetail){
+        recieptDetails.add(recieptDetail);
+        calculateTotal();
+    }
+    public void delRecieptDetail(RecieptDetail recieptDetail){
+        recieptDetails.remove(recieptDetail);
+        calculateTotal();
+    }
+    
+    private void calculateTotal() {
+        int totalQty = 0;
+        double total = 0.0;
+        for(RecieptDetail rd : recieptDetails){
+            total += rd.getTotalPrice();
+            totalQty += rd.getQty();
+        }
+        this.totalQty = totalQty;
+        this.total = total;
+    }
+    
     @Override
     public String toString() {
-        return "Reciept{" + "id=" + id + ", createdDate=" + createdDate + ", total=" + total + ", cash=" + cash + ", totalQty=" + totalQty + ", userId=" + userId + ", customerId=" + customerId + ", user=" + user + ", customer=" + customer + '}';
+        return "Reciept{" + "id=" + id + ", createdDate=" + createdDate + ", total=" + total + ", cash=" + cash + ", totalQty=" + totalQty + ", userId=" + userId + ", customerId=" + customerId + ", user=" + user + ", customer=" + customer + ", recieptDetails=" + recieptDetails + '}';
     }
     
     public static Reciept fromRS(ResultSet rs) {

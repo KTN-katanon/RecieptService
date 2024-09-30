@@ -6,6 +6,7 @@ package com.werapan.databaseproject.dao;
 
 import com.werapan.databaseproject.helper.DatabaseHelper;
 import com.werapan.databaseproject.model.Reciept;
+import com.werapan.databaseproject.model.RecieptDetail;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,6 +33,9 @@ public class RecieptDao implements Dao<Reciept> {
 
             while (rs.next()) {
                 reciept = Reciept.fromRS(rs);
+                RecieptDetailDao rdd = new RecieptDetailDao();
+                ArrayList<RecieptDetail> recieptDetails = (ArrayList<RecieptDetail>) rdd.getAll("reciept_id=" + reciept.getId(), " reciept_detail_id");              
+                reciept.setRecieptDeatails(recieptDetails);
             }
 
         } catch (SQLException ex) {
@@ -39,7 +43,6 @@ public class RecieptDao implements Dao<Reciept> {
         }
         return reciept;
     }
-
 
     public List<Reciept> getAll() {
         ArrayList<Reciept> list = new ArrayList();
@@ -60,7 +63,7 @@ public class RecieptDao implements Dao<Reciept> {
         }
         return list;
     }
-    
+
     @Override
     public List<Reciept> getAll(String where, String order) {
         ArrayList<Reciept> list = new ArrayList();
@@ -81,7 +84,6 @@ public class RecieptDao implements Dao<Reciept> {
         }
         return list;
     }
-    
 
     public List<Reciept> getAll(String order) {
         ArrayList<Reciept> list = new ArrayList();
@@ -164,7 +166,7 @@ public class RecieptDao implements Dao<Reciept> {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        return -1;        
+        return -1;
     }
 
 }
