@@ -19,8 +19,9 @@ public class TestRecieptService {
             System.out.println(reciept);
         }
         System.out.println(recieptService.getById(1));
-        Reciept r1 = new Reciept(100, 100, 1, 1, 1);
+        Reciept r1 = new Reciept(100, 100, 1, 10, 1);
         recieptService.addNew(r1);
+        
         for (Reciept reciept : recieptService.getReciepts()) {
             System.out.println(reciept);
         }
